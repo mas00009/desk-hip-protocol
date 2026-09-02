@@ -81,39 +81,31 @@
 
   .shell {
     max-width: 520px; margin: 0 auto;
-    padding: 22px 16px calc(104px + env(safe-area-inset-bottom));
-  }
-
-  /* ---------- header ---------- */
-
-  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-  h1 { font-size: 20px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
-  header .total {
-    font-family: var(--f-num); font-size: 12px; letter-spacing: .06em; color: var(--ink-soft);
+    padding: 10px 14px calc(76px + env(safe-area-inset-bottom));
   }
 
   /* ---------- exercise list ---------- */
 
   .list {
-    display: grid; gap: 1px; margin-top: 18px;
+    display: grid; gap: 1px;
     background: var(--rule); border: 1px solid var(--rule); border-radius: 13px;
     overflow: hidden;
   }
 
   .ex {
     background: var(--surface);
-    display: grid; grid-template-columns: 60px 1fr auto;
-    align-items: center; gap: 14px; padding: 12px 14px;
+    display: grid; grid-template-columns: 44px 1fr auto;
+    align-items: center; gap: 12px; padding: 9px 12px;
     text-align: left; width: 100%;
   }
   .ex:active { background: var(--accent-bg); }
 
   .ex .thumb {
-    width: 60px; aspect-ratio: 1/1; border-radius: 9px;
+    width: 44px; aspect-ratio: 1/1; border-radius: 8px;
     background: var(--accent-bg); position: relative;
   }
   .ex .thumb i {
-    position: absolute; inset: 4px;
+    position: absolute; inset: 3px;
     background-color: var(--accent);
     -webkit-mask-size: contain; mask-size: contain;
     -webkit-mask-position: center; mask-position: center;
@@ -121,20 +113,19 @@
   }
   .ex .thumb.blank i { background: none; }
 
-  .ex .nm { font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
-  .ex .sub { font-size: 13px; color: var(--ink-soft); margin-top: 1px; }
-  .ex .dur { font-family: var(--f-num); font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
-
-  .foot { font-size: 12.5px; color: var(--ink-soft); line-height: 1.55; margin: 18px 2px 0; }
+  .ex .nm { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+  .ex .sub { font-size: 11.5px; color: var(--ink-soft); margin-top: 0; white-space: nowrap; }
+  .ex .dur { font-family: var(--f-num); font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; }
 
   /* ---------- start bar ---------- */
 
   .startbar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
-    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+    padding: 9px 14px calc(9px + env(safe-area-inset-bottom));
     background: linear-gradient(to top, var(--paper) 62%, transparent);
   }
   .startbar-in { max-width: 520px; margin: 0 auto; }
+  .startbar .go { padding: 13px 18px; font-size: 16px; border-radius: 12px; }
 
   .go {
     display: block; width: 100%;
@@ -143,8 +134,8 @@
     font-size: 17px; font-weight: 650; letter-spacing: -0.01em; text-align: center;
   }
   .go small {
-    display: block; font-family: var(--f-num); font-size: 11px;
-    font-weight: 400; letter-spacing: .1em; opacity: .8; margin-top: 3px;
+    font-family: var(--f-num); font-size: 11px;
+    font-weight: 400; letter-spacing: .08em; opacity: .8; margin-left: 9px;
   }
   .go:active { transform: scale(.985); }
 
@@ -181,7 +172,10 @@
   }
   .s-art.blank { background: none; }
 
-  .s-name { font-size: 22px; font-weight: 650; letter-spacing: -0.02em; margin: 10px 0 0; }
+  .s-name {
+    font-size: 22px; font-weight: 650; letter-spacing: -0.02em;
+    margin: 10px 0 0; text-wrap: balance;
+  }
 
   .s-meta { display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
   .pill {
@@ -198,7 +192,10 @@
   }
   .s-time.low { color: var(--clay); }
 
-  .s-cue { font-size: 15px; line-height: 1.5; color: var(--ink-soft); max-width: 34ch; margin: 10px 0 0; }
+  .s-cue {
+    font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+    max-width: 42ch; margin: 10px 0 0; text-wrap: balance;
+  }
 
   .reps { margin-top: 16px; }
   .reps button {
@@ -227,18 +224,24 @@
   .s-done p { color: var(--ink-soft); font-size: 15px; margin: 0 0 24px; }
   .s-done .go { max-width: 260px; margin: 0 auto; }
 
+  /* Ten rows plus the start bar have to clear the screen without scrolling.
+     On shorter phones the rows tighten rather than the list spilling over. */
+  @media (max-height: 750px) {
+    .shell { padding: 8px 14px calc(70px + env(safe-area-inset-bottom)); }
+    .ex { grid-template-columns: 38px 1fr auto; gap: 11px; padding: 7px 12px; }
+    .ex .thumb { width: 38px; border-radius: 7px; }
+    .ex .nm { font-size: 13.5px; }
+    .ex .sub { font-size: 11px; }
+    .ex .dur { font-size: 11px; }
+    .startbar { padding: 8px 14px calc(8px + env(safe-area-inset-bottom)); }
+    .startbar .go { padding: 11px 16px; font-size: 15.5px; }
+  }
+
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
 <div class="shell">
-  <header>
-    <h1>Desk Hip Protocol</h1>
-    <span class="total" id="total">15:00</span>
-  </header>
-
   <div class="list" id="list"></div>
-
-  <p class="foot">Shoes off, socks on the carpet. Tap any exercise to start from there. Nothing should hurt: a stretch is a broad pull, a pinch is a stop sign. Skip anything your knee objects to.</p>
 </div>
 
 <div class="startbar">
@@ -303,7 +306,7 @@
   var EXERCISES = [
     {
       name: "Hip circles", img: "hip-circles", perSide: true,
-      cue: "Hand on the ledge. Knee to hip height, sweep it wide, round and down. Three circles each way.",
+      cue: "Hand on the ledge. Sweep the knee wide.",
       sets: [
         { side: "Left leg",  secs: 45, reps: 6 },
         { side: "Right leg", secs: 45, reps: 6 }
@@ -311,7 +314,7 @@
     },
     {
       name: "Floor 90/90", img: "ninety-ninety", perSide: true,
-      cue: "Front shin across you, back shin behind, both knees down. Sit tall. Up on an ottoman if a knee objects.",
+      cue: "Front shin across, back shin behind.",
       sets: [
         { side: "Right leg in front", secs: 45 },
         { side: "Left leg in front",  secs: 45 }
@@ -319,20 +322,20 @@
     },
     {
       name: "90/90 switches", img: "ninety-ninety",
-      cue: "Lift both knees, rotate them across, land in the mirror position. No rush.",
+      cue: "Rotate both knees across. Slowly.",
       sets: [ { secs: 60, reps: 10 } ]
     },
     {
       name: "Supported butterfly", img: "butterfly",
-      cue: "Back against the sofa. Soles together, heels a forearm out. Let gravity do it, don't push your knees.",
+      cue: "Soles together. Don't push your knees.",
       sets: [
         { side: "Sit tall",     secs: 60 },
-        { side: "Fold forward", secs: 60, cue: "Hinge from the hips, chest leading, back flat. Hands on your ankles." }
+        { side: "Fold forward", secs: 60, cue: "Hinge from the hips, back flat." }
       ]
     },
     {
       name: "Split stance", img: "split-stance", perSide: true,
-      cue: "Tuck your tailbone, squeeze the back glute, then reach the same arm overhead. Front of the hip, not the low back.",
+      cue: "Tuck the tailbone, then reach up.",
       sets: [
         { side: "Left leg back",  secs: 60 },
         { side: "Right leg back", secs: 60 }
@@ -340,7 +343,7 @@
     },
     {
       name: "Knee to ribs", img: "knee-to-ribs", perSide: true,
-      cue: "On your back. Pull the knee toward the OUTSIDE of your ribs. Other leg flat. Back off any pinch.",
+      cue: "Knee to the outside of your ribs.",
       sets: [
         { side: "Left knee",  secs: 60 },
         { side: "Right knee", secs: 60 }
@@ -348,12 +351,12 @@
     },
     {
       name: "Ledge hinge", img: "ledge-hinge",
-      cue: "Hands on the ledge, walk back, arms straight. Push your hips back and let your chest sink. Knees soft.",
+      cue: "Arms straight, hips back, chest down.",
       sets: [ { secs: 60 } ]
     },
     {
       name: "Hamstring hinge", img: "hamstring-hinge", perSide: true,
-      cue: "Heel on the ottoman, knee soft, hands on your hips. Flat back. Stop when your back rounds.",
+      cue: "Heel up, knee soft, flat back.",
       sets: [
         { side: "Left heel up",  secs: 30 },
         { side: "Right heel up", secs: 30 }
@@ -361,18 +364,18 @@
     },
     {
       name: "Rotation isometric", img: "seated-wipers",
-      cue: "Sit tall, knees together, feet wide. Hands outside your ankles, press your ankles out into your hands. Nothing moves.",
+      cue: "Press your ankles into your hands.",
       sets: [
-        { secs: 10 }, { secs: 14, rest: true },
-        { secs: 10 }, { secs: 14, rest: true },
-        { secs: 10 }, { secs: 14, rest: true },
-        { secs: 10 }, { secs: 14, rest: true },
-        { secs: 10 }, { secs: 14, rest: true }
+        { secs: 10 }, { secs: 14, rest: true, cue: "Let go and breathe." },
+        { secs: 10 }, { secs: 14, rest: true, cue: "Let go and breathe." },
+        { secs: 10 }, { secs: 14, rest: true, cue: "Let go and breathe." },
+        { secs: 10 }, { secs: 14, rest: true, cue: "Let go and breathe." },
+        { secs: 10 }, { secs: 14, rest: true, cue: "Let go and breathe." }
       ]
     },
     {
       name: "Reset walk",
-      cue: "Walk to the kitchen. Feet pointing straight ahead, push off the big toe. Mild, not forced.",
+      cue: "Feet straight. Push off the big toe.",
       sets: [ { secs: 60 } ]
     }
   ];
@@ -418,7 +421,6 @@
   /* ---------- list ---------- */
 
   function renderList() {
-    $("total").textContent = mmss(TOTAL);
     $("startMeta").textContent = mmss(TOTAL) + " · " + EXERCISES.length + " exercises";
 
     var frag = document.createDocumentFragment();
