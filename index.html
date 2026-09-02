@@ -167,6 +167,7 @@
   .seg button[aria-pressed="true"] {
     background: var(--surface); color: var(--ink); box-shadow: var(--shadow);
   }
+  .seg + .seg { margin-top: -8px; }
 
   .go {
     display: block; width: 100%;
@@ -193,6 +194,17 @@
     background: var(--rule); margin-bottom: 5px;
   }
   .dot.done i { background: var(--accent); }
+  .dot.opt { opacity: .45; }
+
+  .rest {
+    background: var(--accent-bg); color: var(--accent-ink);
+    border-radius: 11px; padding: 12px 14px; margin: 0 0 16px;
+    font-size: 13.5px; line-height: 1.45; text-align: left;
+  }
+  .rest b {
+    display: block; font-family: var(--f-num); font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; margin-bottom: 3px;
+  }
 
   /* ---------- run sheet ---------- */
 
@@ -386,11 +398,17 @@
   <section class="panel" id="p-today" role="tabpanel" aria-labelledby="tab-today" tabindex="0">
 
     <div class="card hero">
-      <p class="fin">Today's finisher: <b id="finName">—</b></p>
+      <p class="rest" id="restNote" hidden></p>
+      <p class="fin" id="finLine">Today's finisher: <b id="finName">—</b></p>
 
       <div class="seg" role="group" aria-label="Where you're working">
         <button data-mode="floor"   aria-pressed="true">Floor</button>
         <button data-mode="nofloor" aria-pressed="false">No floor</button>
+      </div>
+
+      <div class="seg" role="group" aria-label="Session length">
+        <button data-len="full"  aria-pressed="true">Full</button>
+        <button data-len="short" aria-pressed="false">Short</button>
       </div>
 
       <button class="go" id="startBtn">
@@ -501,7 +519,7 @@
 
     <details class="note">
       <summary>Consistency beats intensity</summary>
-      <p>Five relaxed sessions beat two heroic ones. On a bad morning do the 90/90, the split stance and the walk, all of five minutes, and count it done. A missed day is nothing. A missed fortnight puts you back to week one.</p>
+      <p>Five relaxed sessions beat two heroic ones. On a bad morning switch the session to Short: hip circles, the 90/90, the split stance and the walk, five minutes, and count it done. Saturday and Sunday are rest days by design, and rest is when the tissue adapts. A missed day is nothing. A missed fortnight puts you back to week one.</p>
     </details>
 
     <details class="note">
@@ -758,6 +776,40 @@
     return s;
   }
 
+  function shortSequence(mode) {
+    var floor = mode === "floor";
+    var s = [];
+
+    s.push({ n: "Hip circles", img: "hip-circles", side: "Left leg", secs: 30, reps: 4,
+             cue: "Hand on the ledge. Knee to hip height, sweep it wide, round and down." });
+    s.push({ n: "Hip circles", img: "hip-circles", side: "Right leg", secs: 30, reps: 4,
+             cue: "Slow enough that nothing clunks. Only the leg moves." });
+
+    if (floor) {
+      s.push({ n: "Floor 90/90", img: "ninety-ninety", side: "Right leg in front", secs: 45,
+               cue: "Front shin across you, back shin behind. Sit tall. Up on an ottoman if a knee objects." });
+      s.push({ n: "Floor 90/90", img: "ninety-ninety", side: "Left leg in front", secs: 45,
+               cue: "Same on the other side. Spine long, hands behind you." });
+    } else {
+      s.push({ n: "Seated wipers", img: "seated-wipers", side: "Hold left", secs: 45,
+               cue: "Feet wide on the ottoman, both knees over to the left. Opposite hip stays down." });
+      s.push({ n: "Seated wipers", img: "seated-wipers", side: "Hold right", secs: 45,
+               cue: "Both knees over to the right. Torso square to the front." });
+    }
+
+    s.push({ n: "Split stance", img: "split-stance", side: "Left leg back", secs: 45,
+             cue: "Tuck your tailbone, squeeze the back glute, then reach the left arm overhead." });
+    s.push({ n: "Split stance", img: "split-stance", side: "Right leg back", secs: 45,
+             cue: "Tuck first, then reach. Torso tall, no arch in the low back." });
+
+    s.push({ n: "Reset walk", side: "Both feet", secs: 60,
+             cue: "Walk to the kitchen. Feet pointing straight ahead, push off the big toe. Mild, not forced." });
+
+    return s;
+  }
+
+  function isWeekend() { var d = new Date().getDay(); return d === 0 || d === 6; }
+
   /* ---------- storage ---------- */
 
   var KEY = "dhp.v1";
@@ -773,6 +825,10 @@
   if (!store.done) store.done = [];
   if (!store.tests) store.tests = {};
   var mode = store.mode === "nofloor" ? "nofloor" : "floor";
+  // Length is a choice for today only. Picking "short" on a Saturday must not
+  // silently shorten Monday, so the stored value expires with the date.
+  var len = (store.lenOn === today() && (store.len === "short" || store.len === "full"))
+    ? store.len : null;
 
   /* ---------- helpers ---------- */
 
@@ -781,7 +837,12 @@
     s = Math.max(0, Math.ceil(s));
     return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
   }
-  function today() { return new Date().toISOString().slice(0, 10); }
+  function iso(d) {
+    return d.getFullYear() + "-" +
+           ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
+           ("0" + d.getDate()).slice(-2);
+  }
+  function today() { return iso(new Date()); }
   function mondayOf(d) {
     var x = new Date(d), day = (x.getDay() + 6) % 7;
     x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - day);
@@ -807,16 +868,30 @@
 
   /* ---------- today tab ---------- */
 
-  var seq = sequence(mode);
+  function buildSeq() { return len === "short" ? shortSequence(mode) : sequence(mode); }
+
+  var seq = buildSeq();
 
   function totalSecs(list) {
     return list.reduce(function (a, b) { return a + b.secs; }, 0);
   }
 
   function renderToday() {
-    seq = sequence(mode);
-    $("dayLabel").textContent = DAYS[new Date().getDay()];
+    var weekend = isWeekend();
+    if (len === null) len = weekend ? "short" : "full";
+    seq = buildSeq();
+
+    $("dayLabel").textContent = DAYS[new Date().getDay()] + (weekend ? " · Rest day" : "");
+
+    $("restNote").hidden = !weekend;
+    if (weekend) {
+      $("restNote").innerHTML = "<b>Rest day</b>The plan runs Monday to Friday. Rest is when the " +
+        "tissue actually adapts, so skipping today costs you nothing. If you want to move anyway, " +
+        "the short session keeps the habit without adding load.";
+    }
+
     var fin = BY_DAY[new Date().getDay()];
+    $("finLine").hidden = weekend || len === "short";
     $("finName").textContent = fin.name + " · " + fin.dose;
     // grouped run sheet
     var rows = [], t = 0;
@@ -837,23 +912,29 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-mode]"), function (b) {
       b.setAttribute("aria-pressed", String(b.getAttribute("data-mode") === mode));
     });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-len]"), function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-len") === len));
+    });
 
     renderStreak();
   }
 
   function renderStreak() {
-    var start = mondayOf(new Date()), labels = ["M","T","W","T","F"], html = "";
-    for (var i = 0; i < 5; i++) {
+    var start = mondayOf(new Date()), labels = ["M","T","W","T","F","S","S"], html = "";
+    for (var i = 0; i < 7; i++) {
       var d = new Date(start); d.setDate(start.getDate() + i);
-      var iso = d.toISOString().slice(0, 10);
-      var on = store.done.indexOf(iso) >= 0;
-      html += '<span class="dot' + (on ? " done" : "") + '"><i></i>' + labels[i] + '</span>';
+      var key = iso(d);
+      var on = store.done.indexOf(key) >= 0;
+      var opt = i > 4 ? " opt" : "";
+      html += '<span class="dot' + opt + (on ? " done" : "") + '" title="' +
+              (i > 4 ? "Rest day, optional" : "") + '"><i></i>' + labels[i] + '</span>';
     }
     $("streak").innerHTML = html;
     if ($("streak2")) $("streak2").innerHTML = html;
     if ($("totalCount")) $("totalCount").textContent = store.done.length;
     if ($("weekCount")) {
-      var wk = store.done.filter(function (x) { return new Date(x) >= mondayOf(new Date()); });
+      var monday = iso(mondayOf(new Date()));
+      var wk = store.done.filter(function (x) { return x >= monday; });
       $("weekCount").textContent = wk.length;
     }
   }
@@ -872,6 +953,14 @@
     b.addEventListener("click", function () {
       mode = b.getAttribute("data-mode");
       store.mode = mode; save(store);
+      renderToday();
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-len]"), function (b) {
+    b.addEventListener("click", function () {
+      len = b.getAttribute("data-len");
+      store.len = len; store.lenOn = today(); save(store);
       renderToday();
     });
   });
@@ -949,7 +1038,7 @@
 
   function startSession() {
     unlockAudio();
-    seq = sequence(mode);
+    seq = buildSeq();
     run.on = true; run.paused = false; run.i = 0;
     $("session").hidden = false;
     $("sDone").hidden = true; $("sBody").hidden = false; $("sFoot").hidden = false;
@@ -968,6 +1057,9 @@
       var d = today();
       if (store.done.indexOf(d) < 0) { store.done.push(d); save(store); }
       renderStreak();
+      $("doneMsg").textContent = isWeekend()
+        ? "That was a rest day. Nothing owed until Monday."
+        : (len === "short" ? "Short one counts. Full session tomorrow." : "Fifteen minutes. Same time tomorrow.");
       $("sBody").hidden = true; $("sFoot").hidden = true; $("sDone").hidden = false;
     } else {
       $("session").hidden = true;
