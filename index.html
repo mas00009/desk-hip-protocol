@@ -121,10 +121,10 @@
     text-transform: uppercase; color: var(--ink-soft);
   }
 
-  .tabs { display: flex; gap: 22px; margin-top: 12px; }
+  .tabs { display: flex; gap: 22px; margin-top: 6px; }
 
   .tab {
-    padding: 8px 0 10px; font-size: 14px; font-weight: 550;
+    padding: 13px 0 14px; font-size: 14px; font-weight: 550;
     color: var(--ink-soft); border-bottom: 2px solid transparent; margin-bottom: -1px;
   }
   .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
@@ -161,7 +161,7 @@
     background: var(--sunk); border-radius: 11px; padding: 4px; margin: 0 0 16px;
   }
   .seg button {
-    padding: 10px 8px; border-radius: 8px; font-size: 14px; font-weight: 550;
+    padding: 12px 8px; border-radius: 8px; font-size: 14px; font-weight: 550;
     color: var(--ink-soft);
   }
   .seg button[aria-pressed="true"] {
@@ -219,7 +219,7 @@
   .s-top { padding: 12px 18px 0; }
   .s-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
   .s-count { font-family: var(--f-num); font-size: 11px; letter-spacing: .1em; color: var(--ink-soft); }
-  .s-x { font-size: 15px; color: var(--ink-soft); padding: 6px 2px; font-weight: 500; }
+  .s-x { font-size: 15px; color: var(--ink-soft); padding: 12px 2px 12px 14px; font-weight: 500; }
 
   .track { height: 3px; background: var(--rule); border-radius: 2px; margin-top: 11px; overflow: hidden; }
   .track i { display: block; height: 100%; background: var(--accent); width: 0; border-radius: 2px; }
@@ -240,7 +240,10 @@
   }
   .s-art.blank { background: none; }
 
-  .s-name { font-size: 21px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
+  .s-name {
+    font-size: 21px; font-weight: 650; letter-spacing: -0.02em;
+    text-transform: none; color: var(--ink); margin: 0;
+  }
 
   .s-side {
     display: inline-block; margin-top: 9px;
@@ -266,7 +269,7 @@
     display: flex; align-items: center; gap: 12px; margin-top: 18px;
   }
   .reps button {
-    min-width: 116px; padding: 11px 16px; border-radius: 999px;
+    min-width: 120px; padding: 13px 18px; border-radius: 999px;
     background: var(--sunk); border: 1px solid var(--rule);
     font-family: var(--f-num); font-size: 13px; letter-spacing: .04em;
   }
@@ -292,6 +295,7 @@
   .s-done { text-align: center; padding: 0 26px; }
   .s-done h3 { font-size: 24px; font-weight: 650; letter-spacing: -0.02em; margin: 0 0 8px; }
   .s-done p { color: var(--ink-soft); font-size: 15px; margin: 0 0 24px; }
+  .s-done .go { max-width: 260px; margin: 0 auto; }
 
   /* ---------- plan tab ---------- */
 
@@ -354,6 +358,10 @@
   .saved { font-family: var(--f-num); font-size: 11px; color: var(--accent); letter-spacing: .06em; min-height: 15px; margin-top: 12px; }
 
   .tiny { font-size: 12.5px; color: var(--ink-soft); line-height: 1.55; margin: 22px 0 0; }
+  .tiny.lead { margin: 0 0 14px; }
+
+  .tally { font-size: 14.5px; color: var(--ink-soft); margin: 0 0 14px; }
+  .tally b { color: var(--ink); font-weight: 650; }
 
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -365,9 +373,9 @@
       <span class="today" id="dayLabel">—</span>
     </div>
     <div class="tabs" role="tablist">
-      <button class="tab" role="tab" aria-selected="true"  data-tab="today">Today</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="plan">Plan</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="log">Log</button>
+      <button class="tab" role="tab" aria-selected="true"  id="tab-today" aria-controls="p-today" data-tab="today">Today</button>
+      <button class="tab" role="tab" aria-selected="false" id="tab-plan" aria-controls="p-plan" data-tab="plan">Plan</button>
+      <button class="tab" role="tab" aria-selected="false" id="tab-log" aria-controls="p-log" data-tab="log">Log</button>
     </div>
   </div>
 </div>
@@ -375,7 +383,7 @@
 <div class="shell">
 
   <!-- ============ TODAY ============ -->
-  <section class="panel" id="p-today" role="tabpanel">
+  <section class="panel" id="p-today" role="tabpanel" aria-labelledby="tab-today" tabindex="0">
 
     <div class="card hero">
       <p class="fin">Today's finisher: <b id="finName">—</b></p>
@@ -396,11 +404,11 @@
     <h2>The sequence</h2>
     <div class="runlist" id="runlist"></div>
 
-    <p class="tiny">Shoes off, socks on the carpet. Nothing here should hurt — a stretch is a broad pull, a pinch is a stop sign. Skip anything your knee objects to.</p>
+    <p class="tiny">Shoes off, socks on the carpet. Nothing here should hurt: a stretch is a broad pull, a pinch is a stop sign. Skip anything your knee objects to.</p>
   </section>
 
   <!-- ============ PLAN ============ -->
-  <section class="panel" id="p-plan" role="tabpanel" hidden>
+  <section class="panel" id="p-plan" role="tabpanel" aria-labelledby="tab-plan" tabindex="0" hidden>
 
     <h2>The six drills</h2>
 
@@ -420,7 +428,7 @@
         <p class="meta">2:30 · Rotation</p>
         <h3>Floor 90/90</h3>
         <p>Front leg bent 90° in front, shin across you. Back leg bent 90° out to the side. Hands behind for support, sit tall.</p>
-        <p>The most valuable drill here. Front hip gets external rotation, back hip gets internal rotation, both in flexion — exactly what cross-legged sitting asks for.</p>
+        <p>The most valuable drill here. Front hip gets external rotation, back hip gets internal rotation, both in flexion, exactly what cross-legged sitting asks for.</p>
         <div class="flag knee"><b>Knees</b>Sit up on the edge of an ottoman. Raising your hips takes the strain off both knees and stops your back rounding. Widen past 90° if a knee objects.</div>
         <div class="flag swap"><b>No-floor swap</b>Seated wipers on the ottoman, feet wide, both knees dropping left then right.</div>
       </div>
@@ -431,7 +439,7 @@
       <div>
         <p class="meta">2:00 · Adductors</p>
         <h3>Supported butterfly</h3>
-        <p>Back against the sofa base, soles together, heels a forearm's length out — further away is kinder on the knees and still gets the inner thigh.</p>
+        <p>Back against the sofa base, soles together, heels a forearm's length out. Further away is kinder on the knees and still gets the inner thigh.</p>
         <p>Sit tall for a minute, then hinge forward from the hips. Hands rest on your ankles. Never push your knees down.</p>
         <div class="flag swap"><b>No-floor swap</b>Wide stance, toes pointing straight forward, hands on the ledge. Shift side to side, bending one knee to 45°.</div>
       </div>
@@ -453,7 +461,7 @@
       <div>
         <p class="meta">2:00 · Flexion depth</p>
         <h3>Knee to ribs</h3>
-        <p>On your back, pull one knee toward the <em>outside</em> of your ribs — toward the armpit, not the chest. Other leg stays flat.</p>
+        <p>On your back, pull one knee toward the <em>outside</em> of your ribs, toward the armpit, not the chest. Other leg stays flat.</p>
         <p>Pulling wide clears the hip socket. A sharp pinch at the front of the hip means back off until it's gone and work just below it.</p>
         <div class="flag swap"><b>No-floor swap</b>Sit tall on the ottoman and hug one knee to the outside of your ribs.</div>
       </div>
@@ -465,7 +473,7 @@
         <p class="meta">2:00 · The hinge</p>
         <h3>Ledge hinge, then hamstrings</h3>
         <p>Hands on the ledge, walk back until your arms are straight and your torso is horizontal. Push your hips back, let your chest sink.</p>
-        <p>Then heel on the ottoman, knee soft, hands on your hip bones, hinge with a flat back. Stop the moment your back rounds — that's the range you're training.</p>
+        <p>Then heel on the ottoman, knee soft, hands on your hip bones, hinge with a flat back. Stop the moment your back rounds. That's the range you're training.</p>
       </div>
     </div>
 
@@ -477,30 +485,30 @@
     <details class="note">
       <summary>Why these three things are separate problems</summary>
       <p><b>Cross-legged</b> needs external rotation <em>and</em> hip flexion together, plus adductor length. Most people have the rotation and lose it the moment the hip is also flexed.</p>
-      <p><b>Toe touch with bent knees</b> is nearly pure hip flexion. Bending the knees rules out your hamstrings — your pelvis isn't rotating over the femurs, so you bend at the spine and run out of room.</p>
+      <p><b>Toe touch with bent knees</b> is nearly pure hip flexion. Bending the knees rules out your hamstrings: your pelvis isn't rotating over the femurs, so you bend at the spine and run out of room.</p>
       <p><b>Turned-out feet</b> mean the hip sits in external rotation by default and internal rotation has quietly disappeared. That's the direction nobody trains, and the one that matters most for you.</p>
     </details>
 
     <details class="note">
       <summary>Some of the turnout is bone</summary>
-      <p>The angle of your femoral neck and the orientation of your hip socket are set. Ten to fifteen degrees of turnout per foot is ordinary and always was. At thirty-plus and asymmetric, there's real tissue and habit to reclaim — but no amount of stretching rotates a femur. Measure against your own week-one photo, never against the person in the video.</p>
+      <p>The angle of your femoral neck and the orientation of your hip socket are set. Ten to fifteen degrees of turnout per foot is ordinary and always was. At thirty-plus and asymmetric, there's real tissue and habit to reclaim, but no amount of stretching rotates a femur. Measure against your own week-one photo, never against the person in the video.</p>
     </details>
 
     <details class="note">
       <summary>Range you never load, you lose</summary>
-      <p>Fifteen minutes a day buys you range. Keeping it takes loading it. Two twenty-minute sessions a week — goblet squats to whatever depth your knees allow, split squats, side-lying hip work — and you'll keep roughly three times as much. That's the multiplier, not more stretching.</p>
+      <p>Fifteen minutes a day buys you range. Keeping it takes loading it. Two twenty-minute sessions a week (goblet squats to whatever depth your knees allow, split squats, side-lying hip work) and you'll keep roughly three times as much. That's the multiplier, not more stretching.</p>
     </details>
 
     <details class="note">
       <summary>Consistency beats intensity</summary>
-      <p>Five relaxed sessions beat two heroic ones. On a bad morning do the 90/90, the split stance and the walk — five minutes — and count it done. A missed day is nothing. A missed fortnight puts you back to week one.</p>
+      <p>Five relaxed sessions beat two heroic ones. On a bad morning do the 90/90, the split stance and the walk, all of five minutes, and count it done. A missed day is nothing. A missed fortnight puts you back to week one.</p>
     </details>
 
     <details class="note">
       <summary>How this should unfold</summary>
-      <p><b>Weeks 1–2.</b> Hold everything at four out of ten. Expect to feel like nothing is happening. You're building the habit and letting your nervous system stop guarding.</p>
-      <p><b>Weeks 3–4.</b> Move to six out of ten. Retest. Rotation moves before flexion, so the wipers improve before the toe touch — that's the plan working.</p>
-      <p><b>Weeks 5–6.</b> Add five minutes at home in the evening: 90/90 and split stance. Frequency beats duration for stiff hips.</p>
+      <p><b>Weeks 1-2.</b> Hold everything at four out of ten. Expect to feel like nothing is happening. You're building the habit and letting your nervous system stop guarding.</p>
+      <p><b>Weeks 3-4.</b> Move to six out of ten. Retest. Rotation moves before flexion, so the wipers improve before the toe touch. That's the plan working.</p>
+      <p><b>Weeks 5-6.</b> Add five minutes at home in the evening: 90/90 and split stance. Frequency beats duration for stiff hips.</p>
       <p><b>Week 7 on.</b> Retest against your week-one photo. Keep this as maintenance and put the effort into loading the new range.</p>
     </details>
 
@@ -508,10 +516,10 @@
   </section>
 
   <!-- ============ LOG ============ -->
-  <section class="panel" id="p-log" role="tabpanel" hidden>
+  <section class="panel" id="p-log" role="tabpanel" aria-labelledby="tab-log" tabindex="0" hidden>
 
     <h2>Baseline</h2>
-    <p class="tiny" style="margin:0 0 14px">Fill these in before your first session, then retest on the Monday of weeks 3, 5 and 7. Hip change is slow enough that you won't perceive it — these numbers are the only way you'll know it's working. Saved on this device only.</p>
+    <p class="tiny lead">Fill these in before your first session, then retest on the Monday of weeks 3, 5 and 7. Hip change is slow enough that you won't perceive it, so these numbers are the only way you'll know it's working. Saved on this device only.</p>
 
     <div class="card">
       <div class="field">
@@ -531,7 +539,7 @@
       </div>
       <div class="field">
         <label for="t4">Standing foot angle</label>
-        <p class="hint">Stand normally, photograph your feet from above. Don't correct first — keep the photo.</p>
+        <p class="hint">Stand normally, photograph your feet from above. Don't correct first, and keep the photo.</p>
         <input id="t4" data-k="t4" placeholder="degrees out, L and R">
       </div>
       <div class="field">
@@ -544,8 +552,8 @@
 
     <h2>Sessions</h2>
     <div class="card">
-      <p class="fin" style="margin:0 0 14px;font-size:14.5px;color:var(--ink-soft)">
-        <b id="totalCount" style="color:var(--ink);font-weight:650">0</b> sessions completed · <b id="weekCount" style="color:var(--ink);font-weight:650">0</b> this week
+      <p class="tally">
+        <b id="totalCount">0</b> sessions completed · <b id="weekCount">0</b> this week
       </p>
       <div class="streak" id="streak2"></div>
     </div>
@@ -566,7 +574,7 @@
 
   <div class="s-body" id="sBody">
     <div class="s-art" id="sArt"></div>
-    <h2 class="s-name" id="sName" style="margin:0;text-transform:none;letter-spacing:-0.02em;color:var(--ink);font-size:21px">—</h2>
+    <h2 class="s-name" id="sName">—</h2>
     <span class="s-side" id="sSide">—</span>
     <div class="s-time" id="sTime">0:00</div>
     <p class="s-cue" id="sCue">—</p>
@@ -578,7 +586,7 @@
   <div class="s-done" id="sDone" hidden>
     <h3>Done.</h3>
     <p id="doneMsg">Fifteen minutes. Same time tomorrow.</p>
-    <button class="go" id="doneBtn" style="max-width:260px;margin:0 auto">Finish</button>
+    <button class="go" id="doneBtn">Finish</button>
   </div>
 
   <div class="s-foot" id="sFoot">
@@ -665,7 +673,7 @@
       build: function () {
         return [
           { n: "Long hold", side: "Worst position",  secs: 60, cue: "Whichever position fought you hardest this week. Settle in and breathe." },
-          { n: "Long hold", side: "Second worst",    secs: 60, cue: "The next worst. Same thing — long, boring, unforced." }
+          { n: "Long hold", side: "Second worst",    secs: 60, cue: "The next worst. Same thing: long, boring, unforced." }
         ];
       }
     }
@@ -706,7 +714,7 @@
 
     if (floor) {
       s.push({ n: "Supported butterfly", img: "butterfly", side: "Sit tall", secs: 60,
-               cue: "Back against the sofa. Soles together, heels a forearm out. Let gravity do it — don't push your knees." });
+               cue: "Back against the sofa. Soles together, heels a forearm out. Let gravity do it. Don't push your knees." });
       s.push({ n: "Supported butterfly", img: "butterfly", side: "Fold forward", secs: 60,
                cue: "Hinge from the hips, chest leading, back flat. Hands on your ankles." });
     } else {
@@ -715,13 +723,13 @@
       s.push({ n: "Adductor shift", img: "adductor-shift", side: "Hold left", secs: 30,
                cue: "Sink into the left. Right leg straight, right inner thigh long." });
       s.push({ n: "Adductor shift", img: "adductor-shift", side: "Hold right", secs: 30,
-               cue: "Sink into the right. Toes still forward — that's the hard part." });
+               cue: "Sink into the right. Toes still forward. That's the hard part." });
     }
 
     s.push({ n: "Split stance", img: "split-stance", side: "Left leg back", secs: 60,
              cue: "Tuck your tailbone, squeeze the back glute, then reach the left arm overhead. Front of the hip, not the low back." });
     s.push({ n: "Split stance", img: "split-stance", side: "Right leg back", secs: 60,
-             cue: "Tuck first, then reach. Torso stays tall — don't lean over the front leg." });
+             cue: "Tuck first, then reach. Torso stays tall. Don't lean over the front leg." });
 
     if (floor) {
       s.push({ n: "Knee to ribs", img: "knee-to-ribs", side: "Left knee", secs: 60,
@@ -745,7 +753,7 @@
     s = s.concat(BY_DAY[new Date().getDay()].build());
 
     s.push({ n: "Reset walk", side: "Both feet", secs: 60,
-             cue: "Walk to the kitchen. Feet pointing straight ahead, push off the big toe. Mild, not forced — it should feel wrong." });
+             cue: "Walk to the kitchen. Feet pointing straight ahead, push off the big toe. Mild, not forced. It should feel wrong." });
 
     return s;
   }

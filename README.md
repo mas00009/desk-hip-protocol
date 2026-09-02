@@ -19,8 +19,8 @@ rotation, a habitual toes-out stance, and knees that don't tolerate kneeling.
   internal-rotation and external-rotation isometrics, hinge holds, single-leg
   balance, and long holds.
 - **Works offline.** Installable to the home screen; a service worker caches the
-  whole app. It is a single self-contained file with no network dependencies —
-  the illustrations are embedded as CSS masks so they take the theme's accent
+  whole app. It is a single self-contained file with no network dependencies.
+  The illustrations are embedded as CSS masks so they take the theme's accent
   colour and stay legible in both light and dark.
 
 Progress notes and session history are stored in `localStorage` on the device only.
@@ -30,7 +30,7 @@ Nothing is uploaded anywhere.
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | The whole app — markup, styles, logic, and artwork |
+| `index.html` | The whole app: markup, styles, logic, and artwork |
 | `sw.js` | Service worker; bump `CACHE` to push an update to installed copies |
 | `manifest.webmanifest` | Install metadata |
 | `icon-*.png` | Home-screen icons |
