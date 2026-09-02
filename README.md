@@ -18,6 +18,10 @@ rotation, a habitual toes-out stance, and knees that don't tolerate kneeling.
 - **Day-aware finisher.** The last two minutes change by weekday, rotating through
   internal-rotation and external-rotation isometrics, hinge holds, single-leg
   balance, and long holds.
+- **Morning reminder.** Pick a time and it generates a repeating weekday
+  calendar event with an alarm. No web API can schedule a notification for a
+  closed page (Notification Triggers never shipped, and real push needs a
+  server), so the job is handed to the calendar, which can do it.
 - **Works offline.** Installable to the home screen; a service worker caches the
   whole app. It is a single self-contained file with no network dependencies.
   The illustrations are embedded as CSS masks so they take the theme's accent
@@ -33,6 +37,7 @@ Nothing is uploaded anywhere.
 | `index.html` | The whole app: markup, styles, logic, and artwork |
 | `sw.js` | Service worker; bump `CACHE` to push an update to installed copies |
 | `manifest.webmanifest` | Install metadata |
+| `reminder.ics` | Default 07:30 weekday alarm, for clients that block generated downloads |
 | `icon-*.png` | Home-screen icons |
 
 ## Not medical advice

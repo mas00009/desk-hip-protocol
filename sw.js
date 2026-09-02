@@ -1,7 +1,7 @@
 /* Cache-first app shell. The page is one self-contained file, so a single
    cached entry is the whole app; bump CACHE to force an update. */
-const CACHE = "dhp-v3";
-const ASSETS = ["./", "./index.html", "./manifest.webmanifest",
+const CACHE = "dhp-v4";
+const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./reminder.ics",
                 "./icon-192.png", "./icon-512.png", "./icon-512-maskable.png"];
 
 self.addEventListener("install", (e) => {
