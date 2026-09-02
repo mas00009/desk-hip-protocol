@@ -1,6 +1,10 @@
-/* Cache-first app shell. The page is one self-contained file, so a single
-   cached entry is the whole app; bump CACHE to force an update. */
-const CACHE = "dhp-v11";
+/* Network-first for the page, cache-first for everything else.
+
+   A pure cache-first shell serves the previous build on the first visit
+   after a deploy, so a change only appears the second time the app is
+   opened. Navigations now try the network and fall back to the cache, so
+   the page is current when online and still works offline. */
+const CACHE = "dhp-v12";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest",
                 "./icon-192.png", "./icon-512.png", "./icon-512-maskable.png"];
 
@@ -18,6 +22,20 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
+
+  if (e.request.mode === "navigate") {
+    e.respondWith(
+      fetch(e.request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put("./index.html", copy));
+          return res;
+        })
+        .catch(() => caches.match("./index.html", { ignoreSearch: true }))
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;
