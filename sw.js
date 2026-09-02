@@ -4,7 +4,7 @@
    after a deploy, so a change only appears the second time the app is
    opened. Navigations now try the network and fall back to the cache, so
    the page is current when online and still works offline. */
-const CACHE = "dhp-v14";
+const CACHE = "dhp-v15";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest",
                 "./icon-192.png", "./icon-512.png", "./icon-512-maskable.png"];
 
